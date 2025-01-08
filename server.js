@@ -1,6 +1,10 @@
 import express from "express";
 // You can import your own files into each other.
 import flowers from "./data.js";
+// Import Mongoose
+import mongoose from "mongoose";
+// import my flowers model
+import Flower from "./models/flowers.js";
 
 const app = express();
 
@@ -12,45 +16,65 @@ app.listen(3000, () => {
   console.log("Listening on port 3000");
 });
 
-app.get("/flowers", function (req, res) {
-  res.send(flowers);
+app.get("/flowers/:seasonid", async function (req, res) {
+  // find data matching seasonid
+  const flowerId = await Flower.findById(req.params.seasonid);
+
+  res.send(flowerId);
 });
 
-app.post("/flowers", function (req, res) {
-  // get new flower from the body of request
-  const newFlower = req.body;
-  // add to existing flowers
-  flowers.push(newFlower);
+
+app.get("/flower-by-season/:season", async function (req, res) {
+  // find data matching seasonid
+  const flowerSeason = await Flower.find({
+    season: { $regex: new RegExp(`^${req.params.season}$`, "i") },
+  });
+  console.log(flowerSeason);
+  // Handle case where no flowers are found
+  if (flowerSeason.length === 0) {
+    return res
+      .status(404)
+      .json({ error: "No flowers found for the specified season." });
+  }
+  res.send(flowerSeason);
+});
+
+app.get("/flowers", async function (req, res) {
+  // find data
+  const allFlowers = await Flower.find().exec();
+
+  res.send(allFlowers);
+});
+
+app.post("/flowers", async function (req, res) {
+  // create document in database
+  const newFlower = await Flower.create(req.body);
+
   // send back flower with appropriate status code
   res.status(201).send(newFlower);
 });
 
-app.delete("/flowers/:name", function (req, res) {
-  const flowerName = req.params.name;
+app.delete("/flowers/:id", async function (req, res) {
+  // find data matching id
+  const id = req.params.id;
+  const deleteFlower = await Flower.findByIdAndDelete(id).exec();
+  console.log(deleteFlower);
+  res.send(deleteFlower);
+});
 
-  // find flower index by name
-  const flowerIndex = flowers.findIndex(
-    (flower) => flower.name.toLowerCase() === flowerName.toLowerCase()
+app.put("/flowers/:name", async function (req, res) {
+  const flowerName = req.params.name;
+  const updatedData = req.body;
+
+  const updatedFlower = await Flower.findOneAndUpdate(
+    { name: flowerName },
+    { $set: updatedData },
+    { new: true, runValidators: true }
   );
-  if (flowerIndex === -1) {
-    return res.status(404).json({ error: "Flower not found." });
-  }
 
-  // remove flower and store deleted flower
-  const deletedFlower = flowers.splice(flowerIndex, 1);
-
-  res.status(200).send(deletedFlower);
+  res.send(updatedFlower);
 });
-
-app.put("/flowers/:name", function (req, res) {
-  const flowerName = req.params.name;
-  const updatedFlower = req.body;
-
-  const flowerIndex = flowers.findIndex((currentFlower) => {
-    return currentFlower.name.toLowerCase() === flowerName.toLowerCase();
-  });
-  // overwrite that object in array
-  flowers[flowerIndex] = updatedFlower;
-
-  res.status(200).send(updatedFlower);
-});
+// * Connect to our database using mongoose.
+const url = "mongodb://127.0.0.1:27017/";
+const dbname = "flowers-db";
+mongoose.connect(`${url}${dbname}`);
