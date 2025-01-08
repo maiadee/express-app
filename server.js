@@ -23,7 +23,6 @@ app.get("/flowers/:seasonid", async function (req, res) {
   res.send(flowerId);
 });
 
-
 app.get("/flower-by-season/:season", async function (req, res) {
   // find data matching seasonid
   const flowerSeason = await Flower.find({
@@ -71,7 +70,7 @@ app.put("/flowers/:name", async function (req, res) {
     { $set: updatedData },
     { new: true, runValidators: true }
   );
-
+  console.log(updatedFlower);
   res.send(updatedFlower);
 });
 // * Connect to our database using mongoose.

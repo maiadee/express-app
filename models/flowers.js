@@ -5,7 +5,21 @@ const flowerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   scientific_name: { type: String, required: false },
   colors: [{ type: String, required: true }],
-  season: { type: String },
+  season: {
+    type: String,
+    enum: [
+      "Spring",
+      "spring",
+      "Summer",
+      "summer",
+      "Year-round",
+      "year-round",
+      "Autumn",
+      "autumn",
+      "Winter",
+      "winter",
+    ],
+  },
   symbolism: { type: String },
 });
 
