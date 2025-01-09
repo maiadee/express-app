@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 // create a schema (consistent format) for my destination collection
 const flowerSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   scientific_name: { type: String, required: false },
   colors: [{ type: String, required: true }],
   season: {
