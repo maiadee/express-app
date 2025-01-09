@@ -6,14 +6,22 @@ import mongoose from "mongoose";
 // import my flowers model
 import Flower from "./models/flowers.js";
 import flowerController from "./controllers/flowerController.js";
+import logger from "./middleware/logger.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 
 // ! 🚨 We need this line of code for posting JSON to express
 app.use(express.json());
 
+// new logging middleware
+app.use(logger);
+
 // have app use the new desitnation controller
 app.use("/", flowerController);
+
+// final piece of middleware
+app.use(errorHandler);
 
 // Listen for requests on port 3000
 app.listen(3000, () => {

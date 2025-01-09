@@ -5,56 +5,42 @@ const router = express.Router();
 
 // * GET all flowers
 
-router.route("/flowers").get(async function (req, res) {
+router.route("/flowers").get(async function (req, res, next) {
   try {
     // find data
     const allFlowers = await Flower.find().exec();
 
     res.send(allFlowers);
   } catch (e) {
-    res.send({
-      message: "Something went wrong. Please check your request and try again!",
-    });
+    next(e);
   }
 });
 
 // * GET flower by id
 
-router.route("/flowers/:id").get(async function (req, res) {
+router.route("/flowers/:id").get(async function (req, res, next) {
   try {
     // find data matching id
     const flowerId = await Flower.findById(req.params.id);
     res.send(flowerId);
   } catch (e) {
-    //   check if req.params.id is a valid MongoDB ObjectID
-    if (e.name === "CastError") {
-      res.send({
-        message: "The ID you provided was not valid. please provide a validID",
-      });
-    } else {
-      res.send({
-        message:
-          "Something went wrong. Please check your request and try again!",
-      });
-    }
+    next(e);
   }
 });
 
 // * GET flowers by season
 
-router.route("/flower-by-season/:season").get(async function (req, res) {
-  // find data matching seasonid
-  const flowerSeason = await Flower.find({
-    season: { $regex: new RegExp(`^${req.params.season}$`, "i") },
-  });
+router.route("/flower-by-season/:season").get(async function (req, res, next) {
+  try {
+    // find data matching seasonid
+    const flowerSeason = await Flower.find({
+      season: { $regex: new RegExp(`^${req.params.season}$`, "i") },
+    });
 
-  // Handle case where no flowers are found for that season
-  if (flowerSeason.length === 0) {
-    return res
-      .status(404)
-      .json({ error: "No flowers found for the specified season." });
+    res.send(flowerSeason);
+  } catch (e) {
+    next(e);
   }
-  res.send(flowerSeason);
 });
 
 // * POST a new flower
@@ -72,6 +58,7 @@ router.route("/flowers").post(async function (req, res) {
         message:
           "The data you provided was not valid. please provide valid data",
       });
+      // check if flower already exists
     } else if (e.code === 11000) {
       res
         .status(409)
@@ -86,7 +73,7 @@ router.route("/flowers").post(async function (req, res) {
 
 // * DELETE flower by id
 
-router.route("/flowers/:id").delete(async function (req, res) {
+router.route("/flowers/:id").delete(async function (req, res, next) {
   try {
     // find data matching id
     const id = req.params.id;
@@ -94,17 +81,7 @@ router.route("/flowers/:id").delete(async function (req, res) {
 
     res.send(deleteFlower);
   } catch (e) {
-    //   check if req.params.id is a valid MongoDB ObjectID
-    if (e.name === "CastError") {
-      res.send({
-        message: "The ID you provided was not valid. please provide a validID",
-      });
-    } else {
-      res.send({
-        message:
-          "Something went wrong. Please check your request and try again!",
-      });
-    }
+    next(e);
   }
 });
 
