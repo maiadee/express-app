@@ -3,6 +3,22 @@ import Flower from "../models/flowers.js";
 
 const router = express.Router();
 
+router.route("/").get(async function (req, res, next) {
+  try {
+    res.render("home.ejs");
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.route("/flowers/new").get(async function (req, res, next) {
+  try {
+    res.render("flowers/new.ejs");
+  } catch (e) {
+    next(e);
+  }
+});
+
 // * GET all flowers
 
 router.route("/flowers").get(async function (req, res, next) {
@@ -10,7 +26,9 @@ router.route("/flowers").get(async function (req, res, next) {
     // find data
     const allFlowers = await Flower.find().exec();
 
-    res.send(allFlowers);
+    res.render("flowers/index.ejs", {
+      allFlowers: allFlowers,
+    });
   } catch (e) {
     next(e);
   }
@@ -21,8 +39,11 @@ router.route("/flowers").get(async function (req, res, next) {
 router.route("/flowers/:id").get(async function (req, res, next) {
   try {
     // find data matching id
-    const flowerId = await Flower.findById(req.params.id);
-    res.send(flowerId);
+    const flowerId = req.params.id;
+    const flower = await Flower.findById(flowerId);
+    res.render("flowers/show.ejs", {
+      flower: flower,
+    });
   } catch (e) {
     next(e);
   }
@@ -48,10 +69,10 @@ router.route("/flower-by-season/:season").get(async function (req, res, next) {
 router.route("/flowers").post(async function (req, res) {
   try {
     // create document in database
-    const newFlower = await Flower.create(req.body);
+    await Flower.create(req.body);
 
     // send back flower with appropriate status code
-    res.status(201).send(newFlower);
+    res.redirect("/flowers/new");
   } catch (e) {
     if (e.name === "ValidationError") {
       res.status(404).json({

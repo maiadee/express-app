@@ -5,11 +5,13 @@ import flowers from "./data.js";
 import mongoose from "mongoose";
 // import my flowers model
 import Flower from "./models/flowers.js";
+
 import flowerController from "./controllers/flowerController.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
+app.use(express.urlencoded({ extended: false }));
 
 // ! 🚨 We need this line of code for posting JSON to express
 app.use(express.json());
