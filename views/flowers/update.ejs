@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Flower</title>
+  </head>
+  <body>
+    <h1>Update <%= flower.name %></h1>
+    <form action="/flowers/<%=flower._id%>?_method=PUT" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" name="name" id="name" value="<%=flower.name%>" />
+      <label for="scientificName">Scientific Name:</label>
+      <input
+        type="text"
+        name="scientificName"
+        id="scientificName"
+        value="<%=flower.scientific_name%>"
+      />
+      <label for="colors">Colours:</label>
+      <input
+        type="text"
+        name="colors"
+        id="colours"
+        value="<%=flower.colors%>"
+      />
+      <label for="season">Season:</label>
+      <input type="text" name="season" id="season" value="<%=flower.season%>" />
+      <label for="symbolism">Symbolism:</label>
+      <input
+        type="text"
+        name="symbolism"
+        id="symbolism"
+        value="<%=flower.symbolism%>"
+      />
+      <button type="submit">Update Flowers</button>
+    </form>
+  </body>
+</html>

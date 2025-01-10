@@ -2,7 +2,7 @@ import express from "express";
 import Flower from "../models/flowers.js";
 
 const router = express.Router();
-
+// !
 router.route("/").get(async function (req, res, next) {
   try {
     res.render("home.ejs");
@@ -11,6 +11,7 @@ router.route("/").get(async function (req, res, next) {
   }
 });
 
+// !
 router.route("/flowers/new").get(async function (req, res, next) {
   try {
     res.render("flowers/new.ejs");
@@ -20,7 +21,7 @@ router.route("/flowers/new").get(async function (req, res, next) {
 });
 
 // * GET all flowers
-
+// !
 router.route("/flowers").get(async function (req, res, next) {
   try {
     // find data
@@ -35,7 +36,7 @@ router.route("/flowers").get(async function (req, res, next) {
 });
 
 // * GET flower by id
-
+// !
 router.route("/flowers/:id").get(async function (req, res, next) {
   try {
     // find data matching id
@@ -51,6 +52,7 @@ router.route("/flowers/:id").get(async function (req, res, next) {
 
 // * GET flowers by season
 
+// !
 router.route("/flower-by-season/:season").get(async function (req, res, next) {
   try {
     // find data matching seasonid
@@ -66,12 +68,13 @@ router.route("/flower-by-season/:season").get(async function (req, res, next) {
 
 // * POST a new flower
 
+// !
 router.route("/flowers").post(async function (req, res) {
   try {
     // create document in database
     await Flower.create(req.body);
 
-    // send back flower with appropriate status code
+    // ?do i want to redirect to another page?
     res.redirect("/flowers/new");
   } catch (e) {
     if (e.name === "ValidationError") {
@@ -93,33 +96,42 @@ router.route("/flowers").post(async function (req, res) {
 });
 
 // * DELETE flower by id
-
+// !
 router.route("/flowers/:id").delete(async function (req, res, next) {
   try {
     // find data matching id
     const id = req.params.id;
     const deleteFlower = await Flower.findByIdAndDelete(id).exec();
 
-    res.send(deleteFlower);
+    res.redirect("/flowers");
+  } catch (e) {
+    next(e);
+  }
+});
+
+// !
+router.route("/flowers/update/:id").get(async function (req, res, next) {
+  try {
+    const flower = await Flower.findById(req.params.id).exec();
+    res.render("flowers/update.ejs", {
+      flower: flower,
+    });
   } catch (e) {
     next(e);
   }
 });
 
 // * PUT new flower data
-
-router.route("/flowers/:name").put(async function (req, res) {
+// !
+router.route("/flowers/:id").put(async function (req, res) {
   try {
-    const flowerName = req.params.name;
-    const updatedData = req.body;
+    const flowerId = req.params.id;
 
-    const updatedFlower = await Flower.findOneAndUpdate(
-      { name: flowerName },
-      { $set: updatedData },
-      { new: true, runValidators: true }
-    );
+    const updatedFlower = await Flower.findByIdAndUpdate(flowerId, req.body, {
+      new: true,
+    });
 
-    res.send(updatedFlower);
+    res.redirect("/flowers");
   } catch (e) {
     //   check if the data provided is valid
     if (e.name === "ValidationError") {

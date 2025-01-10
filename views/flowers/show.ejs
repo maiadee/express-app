@@ -15,5 +15,11 @@
     </ul>
     <p><%= flower.season %></p>
     <p><%= flower.symbolism %></p>
+
+    <form action="/flowers/<%=flower._id%>?_method=DELETE" method="POST">
+      <button type="submit">Delete <%= flower.name %></button>
+    </form>
+    <!-- Link to take us to the new edit page at /flower/update/:id -->
+    <a href="/flowers/update/<%=flower._id%>">Update flower</a>
   </body>
 </html>
