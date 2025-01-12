@@ -9,16 +9,27 @@ import Flower from "./models/flowers.js";
 import flowerController from "./controllers/flowerController.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
-import methodOverride from 'method-override'
+import methodOverride from "method-override";
+import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
 
+// Define __dirname in ES module scope
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
 // ! 🚨 We need this line of code for posting JSON to express
 app.use(express.json());
-// 
+//
 app.use(express.urlencoded({ extended: false }));
-app.use(methodOverride('_method'))
+app.use(methodOverride("_method"));
+// app.use(morgan("dev"));
+
+// serve static files from the directory
+// new code below this line
+app.use(express.static(path.join(__dirname, "public")));
 
 // new logging middleware
 app.use(logger);

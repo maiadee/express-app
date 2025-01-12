@@ -3,12 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Show Flower</title>
   </head>
   <body>
+    <%- include('../partials/html-head') %> <%- include('../partials/nav') %>
     <h1><%= flower.name %></h1>
     <p><%= flower.scientific_name %></p>
-    <ul>
+    <ul class="flower-colors">
       <% flower.colors.forEach((color) => { %>
       <li><%= color %></li>
       <% }) %>
@@ -17,9 +19,11 @@
     <p><%= flower.symbolism %></p>
 
     <form action="/flowers/<%=flower._id%>?_method=DELETE" method="POST">
-      <button type="submit">Delete <%= flower.name %></button>
+      <button class="delete-flower-button" type="submit">Delete <%= flower.name %></button>
     </form>
     <!-- Link to take us to the new edit page at /flower/update/:id -->
-    <a href="/flowers/update/<%=flower._id%>">Update flower</a>
+    <a class="update-flower-link" href="/flowers/update/<%=flower._id%>"
+      >Update flower</a
+    >
   </body>
 </html>

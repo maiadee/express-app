@@ -3,14 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>All Flowers</title>
   </head>
   <body>
+    <%- include('../partials/html-head') %> <%- include('../partials/nav') %>
     <h1>All Flowers</h1>
-    <ul>
+    <ul class="flower-list">
       <% allFlowers.forEach((flower) => { %>
       <li>
-        <a href="/flowers/<%= flower._id %>"> <%= flower.name %> </a>
+        <a class="flower-link" href="/flowers/<%= flower._id %>">
+          <%= flower.name %>
+        </a>
       </li>
       <% }) %>
     </ul>
