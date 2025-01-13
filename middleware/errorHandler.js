@@ -9,7 +9,7 @@ export default function errorHandler(e, req, res, next) {
   } else if (e.name === "ValidationError") {
     const customError = {};
     for (const key in e.errors) {
-      customError[key].message;
+      customError[key] = e.errors[key].errors;
     }
     res.status(422).json({
       message: "The data you provided was not valid. please provide valid data",
