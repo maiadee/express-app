@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 import Flower from "../models/flowers.js";
 import flowers from "../data.js";
+import User from "../models/user.js";
 
 async function seed() {
   // seed our database with data from our file
@@ -17,6 +18,14 @@ async function seed() {
   // add data to db
   const newFlowers = await Flower.create(flowers);
   console.log(newFlowers);
+
+  const newUser = await User.create({
+    username: "Maia",
+    email: "maia@maia.com",
+    password: "maia123",
+  });
+  console.log(newUser);
+
   // disconnect
   await mongoose.disconnect();
 }

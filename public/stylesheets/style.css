@@ -117,3 +117,31 @@ p {
   font-size: 14px;
   box-sizing: border-box; /* Include padding in width calculation */
 }
+
+.user-form {
+  max-width: 400px; /* Limit the width of the form */
+  margin: 50px auto; /* Center the form on the page */
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.user-form label {
+  color: #556c2f;
+  display: block; /* Ensure labels appear above inputs */
+  margin-bottom: 5px;
+  font-weight: bolder;
+  font-size: 15px;
+}
+
+.user-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+

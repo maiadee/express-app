@@ -75,7 +75,7 @@ router.route("/flowers").post(async function (req, res) {
     await Flower.create(req.body);
 
     // ?do i want to redirect to another page?
-    res.redirect("/flowers/new");
+    res.redirect("/flowers");
   } catch (e) {
     if (e.name === "ValidationError") {
       res.status(404).json({

@@ -5,8 +5,10 @@ import flowers from "./data.js";
 import mongoose from "mongoose";
 // import my flowers model
 import Flower from "./models/flowers.js";
+import User from "./models/user.js";
 
 import flowerController from "./controllers/flowerController.js";
+import userController from "./controllers/userController.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
 import methodOverride from "method-override";
@@ -36,6 +38,8 @@ app.use(logger);
 
 // have app use the new desitnation controller
 app.use("/", flowerController);
+
+app.use("/", userController);
 
 // final piece of middleware
 app.use(errorHandler);
