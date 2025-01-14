@@ -21,6 +21,9 @@ const flowerSchema = new mongoose.Schema({
     ],
   },
   symbolism: { type: String },
+  // * Adding a relationship between destinations and users
+  // ? This is called a reference relationship.
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 // export the schema as a model

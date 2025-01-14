@@ -15,16 +15,22 @@ async function seed() {
   // clear database
   await mongoose.connection.db.dropDatabase();
 
+  // ! We mnow need to make asure all flowers have  a user field set
+  // * seed a user first, then use that user for our destinations
+  const user = await User.create({
+    username: "maia",
+    email: "maia@maia.com",
+    password: "Maia1234!",
+  });
+
+  // * add the user to our flowers
+  flowers.forEach((flower) => {
+    flower.user = user;
+  });
+
   // add data to db
   const newFlowers = await Flower.create(flowers);
   console.log(newFlowers);
-
-  const newUser = await User.create({
-    username: "Maia",
-    email: "maia@maia.com",
-    password: "maia123",
-  });
-  console.log(newUser);
 
   // disconnect
   await mongoose.disconnect();

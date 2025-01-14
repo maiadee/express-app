@@ -84,12 +84,15 @@ router.route("/flowers").post(async function (req, res) {
     if (!req.body.colors) req.body.colors = "";
     req.body.colors = req.body.colors.split(",");
 
+    req.body.user = req.session.user;
+
     // create document in database
     await Flower.create(req.body);
 
     // ?do i want to redirect to another page?
     res.redirect("/flowers");
   } catch (e) {
+    console.log(e);
     if (e.name === "ValidationError") {
       res.status(404).json({
         message:
@@ -117,7 +120,20 @@ router.route("/flowers/:id").delete(async function (req, res, next) {
     }
     // find data matching id
     const id = req.params.id;
-    const deleteFlower = await Flower.findByIdAndDelete(id).exec();
+    const deleteFlower = await Flower.findById(id).populate("user");
+    console.log(deleteFlower, req.session.user, id);
+
+    // * Compare the user who is current logged in (req.session.user)
+    // * with the user ON the destination (destination.user)
+    // console.log(req.session.user._id);
+    // console.log(deleteFlower.user._id);
+
+    if (!deleteFlower.user._id.equals(req.session.user._id)) {
+      return res
+        .status(402)
+        .send({ message: "This is not your flower to delete!" });
+    }
+    await Flower.findByIdAndDelete(id);
 
     res.redirect("/flowers");
   } catch (e) {
@@ -149,9 +165,19 @@ router.route("/flowers/:id").put(async function (req, res) {
     }
     const flowerId = req.params.id;
 
-    const updatedFlower = await Flower.findByIdAndUpdate(flowerId, req.body, {
+    const updateFlower = await Flower.findById(flowerId, req.body, {
       new: true,
-    });
+    }).populate("user");
+
+    console.log(updateFlower, req.body, flowerId);
+
+    if (!updateFlower.user._id.equals(req.session.user._id)) {
+      return res
+        .status(402)
+        .send({ message: "This is not your flower to update!" });
+    }
+
+    await Flower.findByIdAndUpdate(flowerId);
 
     res.redirect("/flowers");
   } catch (e) {
