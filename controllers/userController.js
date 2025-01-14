@@ -14,13 +14,17 @@ router.route("/user/new").get(async function (req, res, next) {
 router.route("/user/signup").post(async function (req, res, next) {
   try {
     //   add password restrictions
-    const { password } = req.body;
+    const { password, passwordConfirmation } = req.body;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.status(400).send({
         message:
           "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one symbol.",
       });
+    }
+
+    if (password !== passwordConfirmation) {
+      return res.status(400).send({ message: "Passwords do not match" });
     }
     // create document in database
     await User.create(req.body);
@@ -52,7 +56,7 @@ router.route("/user/login").post(async function (req, res, next) {
     }
 
     // If we succeed, we do this later:
-    // req.session.user = user
+    req.session.user = user;
     res.send({ message: "Login successful!" });
   } catch (e) {
     next(e);

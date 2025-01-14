@@ -12,6 +12,12 @@ import userController from "./controllers/userController.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
 import methodOverride from "method-override";
+import session from "express-session";
+
+// import dotenv to extract environment variables from the .env file
+import dotenv from "dotenv";
+dotenv.config(); // initalises .env
+
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -21,6 +27,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// * Add sessions to express
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false, // is this using HTTPS?
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // expire tomorrow
+    },
+  })
+);
 
 // ! 🚨 We need this line of code for posting JSON to express
 app.use(express.json());

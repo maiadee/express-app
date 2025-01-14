@@ -66,11 +66,24 @@ router.route("/flower-by-season/:season").get(async function (req, res, next) {
   }
 });
 
+// * GET errors page
+
+router.route("/error").get(function (req, res) {
+  res.render("error.ejs");
+});
+
 // * POST a new flower
 
 // !
 router.route("/flowers").post(async function (req, res) {
   try {
+    if (!req.session.user) {
+      return res.redirect("/error");
+    }
+
+    if (!req.body.colors) req.body.colors = "";
+    req.body.colors = req.body.colors.split(",");
+
     // create document in database
     await Flower.create(req.body);
 
@@ -99,6 +112,9 @@ router.route("/flowers").post(async function (req, res) {
 // !
 router.route("/flowers/:id").delete(async function (req, res, next) {
   try {
+    if (!req.session.user) {
+      return res.redirect("/error");
+    }
     // find data matching id
     const id = req.params.id;
     const deleteFlower = await Flower.findByIdAndDelete(id).exec();
@@ -112,6 +128,9 @@ router.route("/flowers/:id").delete(async function (req, res, next) {
 // !
 router.route("/flowers/update/:id").get(async function (req, res, next) {
   try {
+    if (!req.session.user) {
+      return res.redirect("/error");
+    }
     const flower = await Flower.findById(req.params.id).exec();
     res.render("flowers/update.ejs", {
       flower: flower,
@@ -125,6 +144,9 @@ router.route("/flowers/update/:id").get(async function (req, res, next) {
 // !
 router.route("/flowers/:id").put(async function (req, res) {
   try {
+    if (!req.session.user) {
+      return res.redirect("/error");
+    }
     const flowerId = req.params.id;
 
     const updatedFlower = await Flower.findByIdAndUpdate(flowerId, req.body, {
