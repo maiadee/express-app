@@ -41,6 +41,11 @@ app.use(
     },
   })
 );
+// * makes user available in all views
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
 
 // ! 🚨 We need this line of code for posting JSON to express
 app.use(express.json());

@@ -44,6 +44,10 @@ router.route("/user/login").get(async function (req, res, next) {
   }
 });
 
+router.route("/user/logout").get(async function (req, res, next) {
+  req.session.destroy()
+});
+
 router.route("/user/login").post(async function (req, res, next) {
   try {
     // ? We need to know if the login was actually successful!
@@ -57,7 +61,7 @@ router.route("/user/login").post(async function (req, res, next) {
 
     // If we succeed, we do this later:
     req.session.user = user;
-    res.send({ message: "Login successful!" });
+    res.redirect("/");
   } catch (e) {
     next(e);
   }

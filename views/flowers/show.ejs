@@ -18,12 +18,17 @@
     <p><%= flower.season %></p>
     <p><%= flower.symbolism %></p>
 
+    <!-- check if user is logged in -->
+    <% if (user) { %>
     <form action="/flowers/<%=flower._id%>?_method=DELETE" method="POST">
-      <button class="delete-flower-button" type="submit">Delete <%= flower.name %></button>
+      <button class="delete-flower-button" type="submit">
+        Delete <%= flower.name %>
+      </button>
     </form>
     <!-- Link to take us to the new edit page at /flower/update/:id -->
     <a class="update-flower-link" href="/flowers/update/<%=flower._id%>"
       >Update flower</a
     >
+    <% } %>
   </body>
 </html>
