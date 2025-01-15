@@ -2,7 +2,9 @@ import express from "express";
 import Flower from "../models/flowers.js";
 
 const router = express.Router();
-// !
+
+// * GET home page
+
 router.route("/").get(async function (req, res, next) {
   try {
     res.render("home.ejs");
@@ -11,7 +13,8 @@ router.route("/").get(async function (req, res, next) {
   }
 });
 
-// !
+// * GET new flower form page
+
 router.route("/flowers/new").get(async function (req, res, next) {
   try {
     res.render("flowers/new.ejs");
@@ -21,7 +24,7 @@ router.route("/flowers/new").get(async function (req, res, next) {
 });
 
 // * GET all flowers
-// !
+
 router.route("/flowers").get(async function (req, res, next) {
   try {
     // find data
@@ -35,8 +38,8 @@ router.route("/flowers").get(async function (req, res, next) {
   }
 });
 
-// * GET flower by id
-// !
+// * GET flower page by id
+
 router.route("/flowers/:id").get(async function (req, res, next) {
   try {
     // find data matching id
@@ -52,7 +55,6 @@ router.route("/flowers/:id").get(async function (req, res, next) {
 
 // * GET flowers by season
 
-// !
 router.route("/flower-by-season/:season").get(async function (req, res, next) {
   try {
     // find data matching seasonid
@@ -74,7 +76,6 @@ router.route("/error").get(function (req, res) {
 
 // * POST a new flower
 
-// !
 router.route("/flowers").post(async function (req, res) {
   try {
     if (!req.session.user) {
@@ -112,7 +113,7 @@ router.route("/flowers").post(async function (req, res) {
 });
 
 // * DELETE flower by id
-// !
+
 router.route("/flowers/:id").delete(async function (req, res, next) {
   try {
     if (!req.session.user) {
@@ -120,6 +121,8 @@ router.route("/flowers/:id").delete(async function (req, res, next) {
     }
     // find data matching id
     const id = req.params.id;
+    // .populate("user"), Mongoose replaces user field (just an ID) with the actual user data from the User collection.
+    // you get the full user object
     const deleteFlower = await Flower.findById(id).populate("user");
     console.log(deleteFlower, req.session.user, id);
 
@@ -141,7 +144,8 @@ router.route("/flowers/:id").delete(async function (req, res, next) {
   }
 });
 
-// !
+// * DELETE flower update page by id
+
 router.route("/flowers/update/:id").get(async function (req, res, next) {
   try {
     if (!req.session.user) {
@@ -156,8 +160,8 @@ router.route("/flowers/update/:id").get(async function (req, res, next) {
   }
 });
 
-// * PUT new flower data
-// !
+// * PUT update flower data by id
+
 router.route("/flowers/:id").put(async function (req, res) {
   try {
     if (!req.session.user) {
@@ -167,6 +171,7 @@ router.route("/flowers/:id").put(async function (req, res) {
 
     const updateFlower = await Flower.findById(flowerId, req.body, {
       new: true,
+      //  Includes the full user information instead of just the user ID.
     }).populate("user");
 
     console.log(updateFlower, req.body, flowerId);

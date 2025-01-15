@@ -23,6 +23,7 @@
       <% flower.comments.forEach(comment => { %>
       <li><%= comment.content %></li>
 
+      <!-- if the user posted the comment, display a delete button -->
       <% if (user && comment.user.toString() === user._id.toString()) { %>
       <form
         action="/flowers/<%= flower._id %>/comments/<%= comment._id %>?_method=DELETE"

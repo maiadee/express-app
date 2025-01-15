@@ -3,6 +3,8 @@ import User from "../models/user.js";
 
 const router = express.Router();
 
+// * GET signup page
+
 router.route("/user/new").get(async function (req, res, next) {
   try {
     res.render("user/signup.ejs");
@@ -10,6 +12,8 @@ router.route("/user/new").get(async function (req, res, next) {
     next(e);
   }
 });
+
+// * POST new signup
 
 router.route("/user/signup").post(async function (req, res, next) {
   try {
@@ -36,6 +40,8 @@ router.route("/user/signup").post(async function (req, res, next) {
   }
 });
 
+// * GET login page
+
 router.route("/user/login").get(async function (req, res, next) {
   try {
     res.render("user/login.ejs");
@@ -43,6 +49,8 @@ router.route("/user/login").get(async function (req, res, next) {
     next(e);
   }
 });
+
+// GET logout session
 
 router.route("/user/logout").get(async function (req, res, next) {
   try {
@@ -53,11 +61,15 @@ router.route("/user/logout").get(async function (req, res, next) {
   }
 });
 
+// * POST login user
+
 router.route("/user/login").post(async function (req, res, next) {
   try {
     // ? We need to know if the login was actually successful!
+
     // 1) Get the user for this login attempt (with email)
     const user = await User.findOne({ email: req.body.email });
+
     // 2) Compare the 2 password hashes to see if they're the same.
     // ! This will check if the login is a failure, and respond accordingly.
     if (!user.isPasswordValid(req.body.password)) {
