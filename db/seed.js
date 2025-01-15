@@ -15,7 +15,7 @@ async function seed() {
   // clear database
   await mongoose.connection.db.dropDatabase();
 
-  // ! We mnow need to make asure all flowers have  a user field set
+  // ! We  need to make asure all flowers have  a user field set as our flower schema requires this
   // * seed a user first, then use that user for our destinations
   const user = await User.create({
     username: "maia",
@@ -31,6 +31,18 @@ async function seed() {
   // add data to db
   const newFlowers = await Flower.create(flowers);
   console.log(newFlowers);
+
+  // seed comments
+  const comment = {
+    content: "hello",
+    user: user,
+  };
+
+  // push to the comment arrays
+  newFlowers[0].comments.push(comment);
+
+  // save it back to the DB.
+  await newFlowers[0].save();
 
   // disconnect
   await mongoose.disconnect();

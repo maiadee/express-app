@@ -18,8 +18,33 @@
     <p><%= flower.season %></p>
     <p><%= flower.symbolism %></p>
 
+    <h3>Comments</h3>
+    <ul>
+      <% flower.comments.forEach(comment => { %>
+      <li><%= comment.content %></li>
+
+      <% if (user && comment.user.toString() === user._id.toString()) { %>
+      <form
+        action="/flowers/<%= flower._id %>/comments/<%= comment._id %>?_method=DELETE"
+        method="POST"
+      >
+        <button type="submit">Delete Comment</button>
+      </form>
+      <% } %> <% }) %>
+    </ul>
+
     <!-- check if user is logged in -->
     <% if (user) { %>
+    <form
+      class="comments-form"
+      action="/flowers/<%=flower._id%>/comments/"
+      method="POST"
+    >
+      <label for="comments">Comments:</label>
+      <input type="text" name="content" id="content" />
+      <button class="form-button" type="submit">Post</button>
+    </form>
+
     <form action="/flowers/<%=flower._id%>?_method=DELETE" method="POST">
       <button class="delete-flower-button" type="submit">
         Delete <%= flower.name %>
@@ -29,6 +54,7 @@
     <a class="update-flower-link" href="/flowers/update/<%=flower._id%>"
       >Update flower</a
     >
+
     <% } %>
   </body>
 </html>

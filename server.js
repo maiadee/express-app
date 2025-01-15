@@ -9,6 +9,7 @@ import User from "./models/user.js";
 
 import flowerController from "./controllers/flowerController.js";
 import userController from "./controllers/userController.js";
+import commentController from "./controllers/commentController.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
 import methodOverride from "method-override";
@@ -65,6 +66,8 @@ app.use(logger);
 app.use("/", flowerController);
 
 app.use("/", userController);
+
+app.use("/", commentController);
 
 // final piece of middleware
 app.use(errorHandler);

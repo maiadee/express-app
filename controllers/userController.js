@@ -45,8 +45,12 @@ router.route("/user/login").get(async function (req, res, next) {
 });
 
 router.route("/user/logout").get(async function (req, res, next) {
-  req.session.destroy();
-  res.redirect("/");
+  try {
+    req.session.destroy();
+    res.redirect("/");
+  } catch (e) {
+    next(e);
+  }
 });
 
 router.route("/user/login").post(async function (req, res, next) {
